@@ -29,7 +29,7 @@ class Slide(BaseModel):
 
 class Statistics(BaseModel):
     title = models.CharField(max_length=255, verbose_name=_("Заголовок"))
-    value = models.CharField(verbose_name=_("Значение"))
+    value = models.CharField(verbose_name=_("Значение"), max_length=255)
     icon = models.CharField(max_length=255, verbose_name=_("Иконка"))
     order = models.IntegerField(verbose_name=_("Порядок"))
 

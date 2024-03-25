@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 DJANGO_APPS = [
     "jazzmin",
+    "modeltranslation",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -56,7 +57,6 @@ THIRD_PARTY_APPS = [
     "drf_yasg",
     "corsheaders",
     "rest_framework_simplejwt",
-    "modeltranslation",
     "django_resized",
 ]
 
@@ -221,6 +221,7 @@ LANGUAGES = (
 )
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
+MODELTRANSLATION_LANGUAGES = ('en', 'ru', 'uz')
 
 # DJANGO RESIZED IMAGE FIELDS
 DJANGORESIZED_DEFAULT_SIZE = [1920, 1080]

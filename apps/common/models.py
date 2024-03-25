@@ -45,7 +45,7 @@ class Statistics(BaseModel):
 class News(BaseModel):
     title = models.CharField(max_length=255, verbose_name=_("Заголовок"))
     text = models.TextField(verbose_name=_("Текст"))
-    image = ResizedImageField(upload_to='news', verbose_name=_("Изображение"))
+    image = ResizedImageField(upload_to='news', verbose_name=_("Изображение"), null=True, blank=True)
     published_at = models.DateTimeField(verbose_name=_("Дата публикации"))
 
     class Meta:

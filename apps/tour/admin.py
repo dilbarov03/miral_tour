@@ -1,7 +1,7 @@
 from django.contrib import admin
 from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline, TranslationStackedInline
 from .models import Tour, Region, TourCategory, TourType, TourDays, Feature, TourTarif, TarifFeature, TourImage, \
-    TourFeature
+    TourFeature, RegionTour
 
 
 @admin.register(Region)
@@ -73,3 +73,11 @@ class TourTarifAdmin(TabbedTranslationAdmin):
     search_fields = ("title", "tour__title")
     list_filter = ("tour",)
     inlines = (TarifFeatureInline,)
+
+
+@admin.register(RegionTour)
+class RegionTourAdmin(admin.ModelAdmin):
+    list_display = ("id", "region", "tour")
+    list_display_links = ("id", "region")
+    search_fields = ("region__name", "tour__title")
+    list_filter = ("region", "tour")

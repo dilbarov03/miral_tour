@@ -195,3 +195,17 @@ class TarifFeature(BaseModel):
 
     def __str__(self):
         return f"{self.tarif} - {self.order}"
+
+
+class RegionTour(BaseModel):
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="region_tours", verbose_name=_("Регион"),
+                               unique=True)
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="region_tours", verbose_name=_("Тур"))
+    image = ResizedImageField(upload_to="region_tours", verbose_name=_("Изображение"))
+
+    class Meta:
+        verbose_name = _("Тур региона")
+        verbose_name_plural = _("Туры регионов")
+
+    def __str__(self):
+        return f"{self.region} - {self.tour}"

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import TourType, TourCategory, TourDays, TourImage, Feature, TourFeature, TarifFeature, TourTarif, Tour
+from .models import TourType, TourCategory, TourDays, TourImage, Feature, TourFeature, TarifFeature, TourTarif, Tour, \
+    RegionTour
 
 
 class TourTypeSerializer(serializers.ModelSerializer):
@@ -60,6 +61,22 @@ class RegionSerializer(serializers.Serializer):
     name = serializers.CharField()
 
 
+class TourListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tour
+        fields = ("id", "title", "main_image", "from_date", "to_date", "transfer", "discount", "discount_text",
+                  "min_price")
+
+
+class RegionTourSerializer(serializers.ModelSerializer):
+    tour = TourListSerializer()
+    region = RegionSerializer()
+
+    class Meta:
+        model = RegionTour
+        fields = ("id", "region", "tour", "image")
+
+
 class TourDetailSerializer(serializers.ModelSerializer):
     from_region = RegionSerializer()
     to_region = RegionSerializer()
@@ -74,4 +91,4 @@ class TourDetailSerializer(serializers.ModelSerializer):
         model = Tour
         fields = ("id", "title", "main_image", "from_region", "to_region", "return_region", "from_date", "to_date",
                   "video_link", "video", "people_count", "discount", "discount_text",
-                  "images", "days", "features", "tarifs", "min_price")
+                  "images", "days", "features", "tarifs", "min_price", "transfer")

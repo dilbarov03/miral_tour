@@ -58,7 +58,7 @@ class TourAdmin(TabbedTranslationAdmin):
     list_display_links = ("id", "title")
     search_fields = ("title",)
     list_filter = ("category", "tour_type", "from_region", "to_region", "return_region",
-                   "from_date", "to_date", "is_active", "discount")
+                   "from_date", "to_date", "is_active", "discount", "is_popular", "transfer")
     inlines = (TourImagesInline, TourDaysInline, TourFeatureInline, TourTarifInline)
 
 

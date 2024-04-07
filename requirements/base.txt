@@ -10,3 +10,6 @@ djangorestframework-simplejwt==5.3.0
 django-modeltranslation==0.18.11
 django-resized==1.0.2
 Pillow==10.2.0
+redis==5.0.3
+python-decouple
+requests

@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
 
 from apps.common.models import BaseModel
+from apps.tour.managers import TourManager
 
 
 class Region(BaseModel):
@@ -85,9 +86,12 @@ class Tour(BaseModel):
     video = models.FileField(upload_to="tour_videos", verbose_name=_("Видео"), blank=True, null=True)
     is_active = models.BooleanField(default=True, verbose_name=_("Активный"))
     is_popular = models.BooleanField(default=False, verbose_name=_("Популярный"))
+    transfer = models.BooleanField(default=False, verbose_name=_("Трансфер включен"))
     people_count = models.IntegerField(verbose_name=_("Количество людей"))
     discount = models.BooleanField(default=False, verbose_name=_("Скидка"))
     discount_text = models.TextField(verbose_name=_("Текст скидки"), blank=True, null=True)
+
+    objects = TourManager()
 
     class Meta:
         verbose_name = _("Тур")
@@ -96,6 +100,18 @@ class Tour(BaseModel):
 
     def __str__(self):
         return self.title
+
+    @property
+    def min_price(self):
+        return TourTarif.objects.filter(tour=self).aggregate(
+            min_price=models.Min(
+                models.Case(
+                    models.When(models.Q(discount_price__isnull=False) & models.Q(tour__discount=True),
+                                then="discount_price"),
+                    default="price",
+                )
+            )
+        )["min_price"]
 
 
 class TourImage(BaseModel):
@@ -199,8 +215,8 @@ class TarifFeature(BaseModel):
 
 
 class RegionTour(BaseModel):
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="region_tours", verbose_name=_("Регион"),
-                               unique=True)
+    region = models.OneToOneField(Region, on_delete=models.CASCADE, related_name="region_tours",
+                                  verbose_name=_("Регион"))
     tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="region_tours", verbose_name=_("Тур"))
     image = ResizedImageField(upload_to="region_tours", verbose_name=_("Изображение"))
 

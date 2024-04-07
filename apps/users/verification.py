@@ -5,6 +5,7 @@ import redis
 from random import randint
 from decouple import config
 import requests
+from django.conf import settings
 from django.core.mail import send_mail
 
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
@@ -54,6 +55,6 @@ def check_verification_status(email):
 def send_email_code(email, code):
     subject = 'Your verification code'
     message = f'Your verification code is {code}'
-    email_from = 'your-email@example.com'  # replace with your actual email
+    email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
     send_mail(subject, message, email_from, recipient_list)

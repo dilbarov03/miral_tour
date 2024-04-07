@@ -4,6 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
 from apps.tour.models import TourType, TourCategory, Tour, RegionTour
 from apps.tour import serializers
@@ -11,6 +12,7 @@ from apps.tour import serializers
 
 class TourTypeListView(generics.ListAPIView):
     queryset = TourType.objects.prefetch_related("categories")
+    permission_classes = (IsAuthenticated,)
     serializer_class = serializers.TourTypeSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ("name",),

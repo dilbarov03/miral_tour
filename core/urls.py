@@ -14,7 +14,8 @@ urlpatterns = [
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path("api/common/", include('apps.common.urls')),
-    path("api/tour/", include('apps.tour.urls'))
+    path("api/tour/", include('apps.tour.urls')),
+    path("api/users/", include('apps.users.urls')),
 ]
 
 urlpatterns += swagger_urlpatterns

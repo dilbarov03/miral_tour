@@ -63,8 +63,8 @@ THIRD_PARTY_APPS = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -235,3 +235,26 @@ DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
 
 OPTIMIZED_IMAGE_METHOD = "pillow"
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = str(os.environ.get('EMAIL_HOST'))
+EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
+EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
+EMAIL_USE_SSL = True
+EMAIL_PORT = 465
+
+SWAGGER_SETTINGS = {
+    "USE_SESSION_AUTH": True,
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
+    },
+    "DEFAULT_FIELD_INSPECTORS": [
+        "drf_yasg.inspectors.CamelCaseJSONFilter",
+        "drf_yasg.inspectors.InlineSerializerInspector",
+        "drf_yasg.inspectors.RelatedFieldInspector",
+        "drf_yasg.inspectors.ChoiceFieldInspector",
+        "drf_yasg.inspectors.FileFieldInspector",
+        "drf_yasg.inspectors.DictFieldInspector",
+        "drf_yasg.inspectors.SimpleFieldInspector",
+        "drf_yasg.inspectors.StringDefaultFieldInspector",
+    ],
+}

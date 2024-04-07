@@ -20,19 +20,6 @@ class Region(BaseModel):
         return self.name
 
 
-class TourCategory(BaseModel):
-    name = models.CharField(max_length=255, unique=True, verbose_name=_("Название"))
-    order = models.IntegerField(default=1, verbose_name=_("Порядок"))
-
-    class Meta:
-        verbose_name = _("Категория тура")
-        verbose_name_plural = _("Категории туров")
-        ordering = ["order"]
-
-    def __str__(self):
-        return self.name
-
-
 class TourType(BaseModel):
     name = models.CharField(max_length=255, unique=True, verbose_name=_("Название"))
     image = ResizedImageField(upload_to="tour_types", verbose_name=_("Изображение"))
@@ -47,8 +34,29 @@ class TourType(BaseModel):
         return self.name
 
 
+class TourCategory(BaseModel):
+    name = models.CharField(max_length=255, unique=True, verbose_name=_("Название"))
+    order = models.IntegerField(default=1, verbose_name=_("Порядок"))
+    tour_type = models.ForeignKey(
+        TourType,
+        on_delete=models.CASCADE,
+        related_name="categories",
+        verbose_name=_("Тип тура"),
+        null=True
+    )
+
+    class Meta:
+        verbose_name = _("Категория тура")
+        verbose_name_plural = _("Категории туров")
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.name} - {self.tour_type}"
+
+
 class Tour(BaseModel):
     title = models.CharField(max_length=255, verbose_name=_("Название"))
+    description = models.TextField(verbose_name=_("Описание"), blank=True, null=True)
     main_image = ResizedImageField(upload_to="tours", verbose_name=_("Главное изображение"))
     category = models.ForeignKey(
         TourCategory,

@@ -4,16 +4,18 @@ from .models import TourType, TourCategory, TourDays, TourImage, Feature, TourFe
     RegionTour
 
 
-class TourTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TourType
-        fields = ("id", "name", "image")
-
-
 class TourCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TourCategory
         fields = ("id", "name")
+
+
+class TourTypeSerializer(serializers.ModelSerializer):
+    categories = TourCategorySerializer(many=True)
+
+    class Meta:
+        model = TourType
+        fields = ("id", "name", "image", "categories")
 
 
 class TourImageSerializer(serializers.ModelSerializer):
@@ -64,8 +66,8 @@ class RegionSerializer(serializers.Serializer):
 class TourListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
-        fields = ("id", "title", "main_image", "from_date", "to_date", "transfer", "discount", "discount_text",
-                  "min_price")
+        fields = ("id", "title", "description", "main_image", "from_date", "to_date", "transfer", "discount",
+                  "discount_text", "min_price")
 
 
 class RegionTourSerializer(serializers.ModelSerializer):
@@ -89,6 +91,6 @@ class TourDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ("id", "title", "main_image", "from_region", "to_region", "return_region", "from_date", "to_date",
-                  "video_link", "video", "people_count", "discount", "discount_text",
+        fields = ("id", "title", "description", "main_image", "from_region", "to_region", "return_region",
+                  "from_date", "to_date", "video_link", "video", "people_count", "discount", "discount_text",
                   "images", "days", "features", "tarifs", "min_price", "transfer")

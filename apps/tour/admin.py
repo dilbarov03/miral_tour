@@ -13,9 +13,10 @@ class RegionAdmin(TabbedTranslationAdmin):
 
 @admin.register(TourCategory)
 class TourCategoryAdmin(TabbedTranslationAdmin):
-    list_display = ("id", "name", "order")
+    list_display = ("id", "name", "tour_type", "order")
     list_display_links = ("id", "name")
     search_fields = ("name",)
+    list_filter = ("tour_type",)
 
 
 @admin.register(TourType)

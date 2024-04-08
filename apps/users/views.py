@@ -1,9 +1,12 @@
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from apps.tour.models import Tour
+from apps.tour.serializers import TourListSerializer
 from apps.users.models import User
-from apps.users.serializers import EmailSerializer, VerifyCodeSerializer
+from apps.users.serializers import EmailSerializer, VerifyCodeSerializer, UserSerializer, SavedTourSerializer
 from apps.users.verification import send_code, verify_code_cache
 
 
@@ -35,3 +38,26 @@ class VerifyCodeAPIView(generics.GenericAPIView):
             return Response({"access": str(refresh.access_token), "refresh": str(refresh)})
 
         return Response({"success": success, "message": message}, status=400)
+
+
+class UserProfileAPIView(generics.RetrieveAPIView, generics.UpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = (IsAuthenticated,)
+    queryset = User.objects.all()
+
+    def get_object(self):
+        return self.request.user
+
+
+class SavedTourAPIView(generics.ListAPIView):
+    serializer_class = TourListSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Tour.objects.filter(saved_tours__user=self.request.user)
+
+
+class SavedTourCreateView(generics.CreateAPIView):
+    serializer_class = SavedTourSerializer
+    permission_classes = (IsAuthenticated,)
+

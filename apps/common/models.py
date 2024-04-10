@@ -88,3 +88,14 @@ class Contact(BaseModel):
 
     def __str__(self):
         return self.address
+
+
+class File(BaseModel):
+    file = models.FileField(upload_to='files', verbose_name=_("Файл"))
+
+    class Meta:
+        verbose_name = _("Файл")
+        verbose_name_plural = _("Файлы")
+
+    def __str__(self):
+        return self.file.name

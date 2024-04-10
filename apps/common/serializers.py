@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.common.models import Slide, Statistics, News, Contact, MessageRequest
+from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File
 
 
 class SlideSerializer(serializers.ModelSerializer):
@@ -34,3 +34,9 @@ class MessageRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = MessageRequest
         fields = ("id", "name", "phone", "message")
+
+
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = File
+        fields = ("id", "file")

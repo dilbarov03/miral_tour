@@ -206,6 +206,10 @@ class TourTarif(BaseModel):
     def __str__(self):
         return f"{self.tour} - {self.title}"
 
+    @property
+    def final_price(self):
+        return self.discount_price if self.tour.discount else self.price
+
 
 class TarifFeature(BaseModel):
     tarif = models.ForeignKey(TourTarif, on_delete=models.CASCADE, related_name="features", verbose_name=_("Тариф"))

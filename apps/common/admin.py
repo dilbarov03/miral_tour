@@ -1,7 +1,7 @@
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
 
-from apps.common.models import Slide, Statistics, News, Contact, MessageRequest
+from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File
 
 
 @admin.register(Slide)
@@ -37,4 +37,10 @@ class ContactAdmin(TranslationAdmin):
 class MessageRequestAdmin(admin.ModelAdmin):
     list_display = ('name', 'phone', 'message')
     search_fields = ('name', 'phone', 'message')
+    list_filter = ('created_at',)
+
+
+@admin.register(File)
+class FileAdmin(admin.ModelAdmin):
+    list_display = ('id', 'file', 'created_at')
     list_filter = ('created_at',)

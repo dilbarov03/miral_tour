@@ -7,4 +7,5 @@ urlpatterns = [
     path("profile/", views.UserProfileAPIView.as_view()),
     path("saved-tours/", views.SavedTourAPIView.as_view()),
     path("saved-tours/change/", views.SavedTourCreateView.as_view()),
+    path("orders/create/", views.OrderCreateView.as_view()),
 ]

@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.common.models import BaseModel
+from apps.common.models import BaseModel, File
 from apps.users.managers import CustomUserManager
 
 
@@ -22,6 +22,17 @@ class User(AbstractUser, BaseModel):
 
     def __str__(self):
         return self.full_name or self.email
+
+    def delete(self, using=None, keep_parents=False):
+        orders = self.orders.filter(status="moderation").annotate(persons_count=models.Count("persons"))
+        for order in orders:
+            if order.persons_count > 0:
+                tour = order.tour
+                tour.people_count += order.persons_count
+                tour.save()
+                person_files = order.persons.values_list("passport_file__id", flat=True)
+                File.objects.filter(id__in=person_files).delete()
+        super().delete(using, keep_parents)
 
 
 class SavedTour(BaseModel):

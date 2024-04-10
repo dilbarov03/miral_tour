@@ -19,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "full_name", "email", "phone")
 
 
+
 class SavedTourSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavedTour
@@ -76,3 +77,4 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         tour.people_count -= len(persons)
         tour.save()
         return order
+

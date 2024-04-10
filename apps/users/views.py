@@ -1,3 +1,5 @@
+from django.utils import timezone
+from django.utils.translation import gettext as _
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
@@ -68,3 +70,15 @@ class OrderCreateView(generics.CreateAPIView):
     serializer_class = OrderCreateSerializer
     permission_classes = (IsAuthenticated,)
     parser_classes = (MultiPartParser, JSONParser)
+
+
+class UserDeleteAPIView(generics.GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request):
+        user = request.user
+        if user.orders.filter(status="success", tour__from_date__gte=timezone.now().date()).exists():
+            return Response({"success": False, "message": _("У вас есть активные заказы. Удаление невозможно.")},
+                            status=400)
+        request.user.delete()
+        return Response({"success": True})

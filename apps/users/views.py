@@ -10,7 +10,7 @@ from apps.tour.models import Tour
 from apps.tour.serializers import TourListSerializer
 from apps.users.models import User
 from apps.users.serializers import EmailSerializer, VerifyCodeSerializer, UserSerializer, SavedTourSerializer, \
-    OrderCreateSerializer
+    OrderCreateSerializer, UserOrderSerializer
 from apps.users.verification import send_code, verify_code_cache
 
 
@@ -82,3 +82,11 @@ class UserDeleteAPIView(generics.GenericAPIView):
                             status=400)
         request.user.delete()
         return Response({"success": True})
+
+
+class UserOrdersAPIView(generics.ListAPIView):
+    serializer_class = UserOrderSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return self.request.user.orders.all()

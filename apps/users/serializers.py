@@ -1,6 +1,7 @@
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 
+from apps.tour.serializers import TourListSerializer
 from apps.users.models import User, SavedTour, OrderPerson, Order
 
 
@@ -77,4 +78,12 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         tour.people_count -= len(persons)
         tour.save()
         return order
+
+
+class UserOrderSerializer(serializers.ModelSerializer):
+    tour = TourListSerializer()
+
+    class Meta:
+        model = Order
+        fields = ("id", "tour", "status", "total_price", "order_file", "created_at")
 

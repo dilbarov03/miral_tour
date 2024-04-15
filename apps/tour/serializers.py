@@ -64,10 +64,17 @@ class RegionSerializer(serializers.Serializer):
 
 
 class TourListSerializer(serializers.ModelSerializer):
+    is_saved = serializers.SerializerMethodField()
+
     class Meta:
         model = Tour
         fields = ("id", "title", "description", "main_image", "from_date", "to_date", "transfer", "discount",
-                  "discount_text", "min_price")
+                  "discount_text", "min_price", "is_saved")
+
+    def get_is_saved(self, obj):
+        if self.context.get("request").user.is_authenticated:
+            return obj.saved_tours.filter(user=self.context.get("request").user).exists()
+        return False
 
 
 class RegionTourSerializer(serializers.ModelSerializer):

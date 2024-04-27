@@ -29,8 +29,9 @@ class Slide(BaseModel):
 
 class Statistics(BaseModel):
     title = models.CharField(max_length=255, verbose_name=_("Заголовок"))
+    subtitle = models.CharField(max_length=255, verbose_name=_("Подзаголовок"))
     value = models.CharField(verbose_name=_("Значение"), max_length=255)
-    icon = models.CharField(max_length=255, verbose_name=_("Иконка"))
+    icon = models.FileField(upload_to='statistics', verbose_name=_("Иконка"))
     order = models.IntegerField(verbose_name=_("Порядок"))
 
     class Meta:
@@ -42,10 +43,22 @@ class Statistics(BaseModel):
         return self.title
 
 
+class NewsTag(BaseModel):
+    name = models.CharField(max_length=255, verbose_name=_("Название"))
+
+    class Meta:
+        verbose_name = _("Тег новости")
+        verbose_name_plural = _("Теги новостей")
+
+    def __str__(self):
+        return self.name
+
+
 class News(BaseModel):
     title = models.CharField(max_length=255, verbose_name=_("Заголовок"))
     text = models.TextField(verbose_name=_("Текст"))
     image = ResizedImageField(upload_to='news', verbose_name=_("Изображение"), null=True, blank=True)
+    tag = models.ForeignKey(NewsTag, on_delete=models.SET_NULL, related_name='news', verbose_name=_("Тег"), null=True)
     published_at = models.DateTimeField(verbose_name=_("Дата публикации"))
 
     class Meta:

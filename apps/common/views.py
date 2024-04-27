@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser
 
@@ -19,6 +20,8 @@ class StatisticsListAPIView(generics.ListAPIView):
 class NewsListAPIView(generics.ListAPIView):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('tag',)
 
 
 class NewsDetailAPIView(generics.RetrieveAPIView):

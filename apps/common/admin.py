@@ -1,7 +1,7 @@
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
 
-from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File
+from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, NewsTag
 
 
 @admin.register(Slide)
@@ -44,3 +44,9 @@ class MessageRequestAdmin(admin.ModelAdmin):
 class FileAdmin(admin.ModelAdmin):
     list_display = ('id', 'file', 'created_at')
     list_filter = ('created_at',)
+
+
+@admin.register(NewsTag)
+class NewsTagAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)

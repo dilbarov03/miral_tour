@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File
+from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, NewsTag
 
 
 class SlideSerializer(serializers.ModelSerializer):
@@ -12,13 +12,21 @@ class SlideSerializer(serializers.ModelSerializer):
 class StatisticsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statistics
-        fields = ("id", "title", "value", "icon")
+        fields = ("id", "title", "subtitle", "value", "icon")
+
+
+class NewsTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewsTag
+        fields = ("id", "name")
 
 
 class NewsSerializer(serializers.ModelSerializer):
+    tag = NewsTagSerializer
+
     class Meta:
         model = News
-        fields = ("id", "title", "text", "image", "published_at")
+        fields = ("id", "title", "tag", "text", "image", "published_at")
 
 
 class ContactSerializer(serializers.ModelSerializer):

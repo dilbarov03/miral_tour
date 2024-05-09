@@ -22,7 +22,7 @@ class NewsTagSerializer(serializers.ModelSerializer):
 
 
 class NewsSerializer(serializers.ModelSerializer):
-    tag = NewsTagSerializer
+    tag = NewsTagSerializer(read_only=True)
 
     class Meta:
         model = News

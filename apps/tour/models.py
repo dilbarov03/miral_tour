@@ -121,6 +121,12 @@ class Tour(BaseModel):
             )
         )["min_price"]
 
+    @property
+    def origin_start_price(self):
+        return TourTarif.objects.filter(tour=self).aggregate(
+            min_price=models.Min("price")
+        )["min_price"]
+
 
 class TourImage(BaseModel):
     tour = models.ForeignKey(

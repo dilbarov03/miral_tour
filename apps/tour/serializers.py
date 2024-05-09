@@ -69,7 +69,7 @@ class TourListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = ("id", "title", "description", "main_image", "from_date", "to_date", "transfer", "discount",
-                  "discount_text", "min_price", "is_saved")
+                  "discount_text", "min_price", "origin_start_price", "is_saved")
 
     def get_is_saved(self, obj):
         if self.context.get("request").user.is_authenticated:

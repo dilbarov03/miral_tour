@@ -37,7 +37,7 @@ class FeatureSerializer(serializers.ModelSerializer):
 
 
 class TourFeatureSerializer(serializers.ModelSerializer):
-    feature = FeatureSerializer
+    feature = FeatureSerializer(read_only=True)
 
     class Meta:
         model = TourFeature

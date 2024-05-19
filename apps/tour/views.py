@@ -6,6 +6,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
+from apps.tour.filters import TourFilterSet
 from apps.tour.models import TourType, TourCategory, Tour, RegionTour
 from apps.tour import serializers
 
@@ -61,3 +62,11 @@ class SimilarTourListView(generics.ListAPIView):
             category=tour.category,
             tour_type=tour.tour_type,
         ).exclude(pk=tour.pk).order_by("?")[:4]
+
+
+class TourFilterView(generics.ListAPIView):
+    serializer_class = serializers.TourListSerializer
+    queryset = Tour.objects.active()
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ("title",)
+    filterset_class = TourFilterSet

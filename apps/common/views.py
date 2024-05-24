@@ -2,9 +2,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser
 
-from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File
+from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, AboutUs
 from apps.common.serializers import SlideSerializer, StatisticsSerializer, NewsSerializer, ContactSerializer, \
-    MessageRequestSerializer, FileSerializer
+    MessageRequestSerializer, FileSerializer, AboutSerializer
 
 
 class SlideListAPIView(generics.ListAPIView):
@@ -47,3 +47,9 @@ class FileUploadAPIView(generics.CreateAPIView):
     serializer_class = FileSerializer
     parser_classes = [MultiPartParser]
 
+
+class AboutUsAPIView(generics.RetrieveAPIView):
+    serializer_class = AboutSerializer
+
+    def get_object(self):
+        return AboutUs.objects.first()

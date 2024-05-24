@@ -95,9 +95,15 @@ class TourDetailSerializer(serializers.ModelSerializer):
     features = TourFeatureSerializer(many=True)
     tarifs = TourTarifSerializer(many=True)
     min_price = serializers.IntegerField()
+    is_saved = serializers.SerializerMethodField()
 
     class Meta:
         model = Tour
         fields = ("id", "title", "description", "main_image", "from_region", "to_region", "return_region",
                   "from_date", "to_date", "video_link", "video", "people_count", "discount", "discount_text",
-                  "images", "days", "features", "tarifs", "min_price", "transfer")
+                  "images", "days", "features", "tarifs", "min_price", "transfer", "is_saved")
+
+    def get_is_saved(self, obj):
+        if self.context.get("request").user.is_authenticated:
+            return obj.saved_tours.filter(user=self.context.get("request").user).exists()
+        return False

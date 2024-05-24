@@ -1,6 +1,6 @@
 from modeltranslation.translator import translator, TranslationOptions
 
-from apps.common.models import Slide, Statistics, News, Contact, NewsTag
+from apps.common.models import Slide, Statistics, News, Contact, NewsTag, AboutUs
 
 
 class SlideTranslationOptions(TranslationOptions):
@@ -23,8 +23,13 @@ class ContactTranslationOptions(TranslationOptions):
     fields = ('address',)
 
 
+class AboutTranslationOptions(TranslationOptions):
+    fields = ('title', 'body')
+
+
 translator.register(Slide, SlideTranslationOptions)
 translator.register(Statistics, StatisticsTranslationOptions)
 translator.register(News, NewsTranslationOptions)
 translator.register(Contact, ContactTranslationOptions)
 translator.register(NewsTag, NewsTagTranslationOptions)
+translator.register(AboutUs, AboutTranslationOptions)

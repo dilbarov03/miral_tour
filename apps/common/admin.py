@@ -1,7 +1,7 @@
 from django.contrib import admin
-from modeltranslation.admin import TranslationAdmin
+from modeltranslation.admin import TranslationAdmin, TabbedTranslationAdmin
 
-from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, NewsTag
+from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, NewsTag, AboutUs
 
 
 @admin.register(Slide)
@@ -50,3 +50,14 @@ class FileAdmin(admin.ModelAdmin):
 class NewsTagAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
+
+
+@admin.register(AboutUs)
+class AboutUsAdmin(TabbedTranslationAdmin):
+    list_display = ('id', 'title')
+    list_display_links = ('id', 'title')
+
+    def has_add_permission(self, request):
+        if AboutUs.objects.count() >= 1:
+            return False
+        return True

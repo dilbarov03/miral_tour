@@ -1,7 +1,7 @@
 from django.urls import path
 
 from apps.common.views import SlideListAPIView, StatisticsListAPIView, NewsListAPIView, NewsDetailAPIView, \
-    ContactAPIView, MessageRequestAPIView, FileUploadAPIView
+    ContactAPIView, MessageRequestAPIView, FileUploadAPIView, AboutUsAPIView
 
 urlpatterns = [
     path("slides/", SlideListAPIView.as_view(), name="slide-list"),
@@ -11,4 +11,5 @@ urlpatterns = [
     path("contacts/", ContactAPIView.as_view(), name="contact-detail"),
     path("message-request/", MessageRequestAPIView.as_view(), name="message-request"),
     path("file-upload/", FileUploadAPIView.as_view(), name="file-upload"),
+    path("about-us/", AboutUsAPIView.as_view(), name="about-us"),
 ]

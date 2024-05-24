@@ -1,3 +1,4 @@
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -112,3 +113,15 @@ class File(BaseModel):
 
     def __str__(self):
         return self.file.name
+
+
+class AboutUs(BaseModel):
+    title = models.CharField(max_length=255, verbose_name=_("Заголовок"))
+    body = RichTextUploadingField(verbose_name=_("Текст"))
+
+    class Meta:
+        verbose_name = _("О нас")
+        verbose_name_plural = _("О нас")
+
+    def __str__(self):
+        return self.title

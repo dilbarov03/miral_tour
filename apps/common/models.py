@@ -57,7 +57,7 @@ class NewsTag(BaseModel):
 
 class News(BaseModel):
     title = models.CharField(max_length=255, verbose_name=_("Заголовок"))
-    text = models.TextField(verbose_name=_("Текст"))
+    text = RichTextUploadingField(verbose_name=_("Текст"))
     image = ResizedImageField(upload_to='news', verbose_name=_("Изображение"), null=True, blank=True)
     tag = models.ForeignKey(NewsTag, on_delete=models.SET_NULL, related_name='news', verbose_name=_("Тег"), null=True)
     published_at = models.DateTimeField(verbose_name=_("Дата публикации"))

@@ -13,7 +13,6 @@ from apps.tour import serializers
 
 class TourTypeListView(generics.ListAPIView):
     queryset = TourType.objects.prefetch_related("categories")
-    permission_classes = (IsAuthenticated,)
     serializer_class = serializers.TourTypeSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ("name",),

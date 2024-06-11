@@ -27,7 +27,7 @@ class TourImageSerializer(serializers.ModelSerializer):
 class TourDaysSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourDays
-        fields = ("id", "title", "text")
+        fields = ("id", "title", "subtitle", "text")
 
 
 class FeatureSerializer(serializers.ModelSerializer):

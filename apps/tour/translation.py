@@ -26,7 +26,7 @@ class TourTranslationOptions(TranslationOptions):
 
 @translator.register(TourDays)
 class TourDaysTranslationOptions(TranslationOptions):
-    fields = ("title", "text")
+    fields = ("title", "text", "subtitle")
 
 
 @translator.register(Feature)

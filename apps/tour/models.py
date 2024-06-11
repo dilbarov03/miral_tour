@@ -155,6 +155,7 @@ class TourDays(BaseModel):
         verbose_name=_("Тур"),
     )
     title = models.CharField(max_length=255, verbose_name=_("Название"))
+    subtitle = models.CharField(max_length=255, verbose_name=_("Подзаголовок"), blank=True, null=True)
     text = models.TextField(verbose_name=_("Описание"))
     order = models.IntegerField(default=1, verbose_name=_("Порядок"))
 

@@ -1,14 +1,19 @@
+import stripe
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics
+from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.tour.models import Tour
 from apps.tour.serializers import TourListSerializer
-from apps.users.models import User
+from apps.users.models import User, Order
 from apps.users.serializers import EmailSerializer, VerifyCodeSerializer, UserSerializer, SavedTourSerializer, \
     OrderCreateSerializer, UserOrderSerializer
 from apps.users.verification import send_code, verify_code_cache
@@ -90,3 +95,44 @@ class UserOrdersAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         return self.request.user.orders.all()
+
+
+class CreateStripeCheckoutSession(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    order_id = openapi.Parameter("order_id", in_=openapi.IN_BODY, type=openapi.TYPE_INTEGER,
+                                 required=True)
+
+    @swagger_auto_schema(request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            "order_id": openapi.Schema(type=openapi.TYPE_INTEGER)
+        }
+    ))
+    def post(self, request):
+        data = request.data
+        order = get_object_or_404(Order, id=data.get("order_id"))
+        if order.user != request.user:
+            return Response({"success": False, "message": _("Заказ не найден")}, status=404)
+
+        return Response({"checkout_url": "https://example.com/"})
+
+        # checkout_session = stripe.checkout.Session.create(
+        #     payment_method_types=["card"],
+        #     line_items=[
+        #         {
+        #             "price_data": {
+        #                 "currency": "usd",
+        #                 "product_data": {
+        #                     "name": order.tarif.title,
+        #                 },
+        #                 "unit_amount": int(order.tarif.price * 100),
+        #             },
+        #             "quantity": 1,
+        #         },
+        #     ],
+        #     mode="payment",
+        #     success_url="https://example.com/success",
+        #     cancel_url="https://example.com/cancel",
+        # )
+        # return Response({"checkout_url": checkout_session.url})

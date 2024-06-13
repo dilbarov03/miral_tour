@@ -10,4 +10,5 @@ urlpatterns = [
     path("saved-tours/change/", views.SavedTourCreateView.as_view()),
     path("orders/create/", views.OrderCreateView.as_view()),
     path("orders/my/", views.UserOrdersAPIView.as_view()),
+    path("checkout/", views.CreateStripeCheckoutSession.as_view()),
 ]

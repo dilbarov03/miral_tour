@@ -95,6 +95,7 @@ class Contact(BaseModel):
     youtube = models.URLField(null=True, verbose_name=_("YouTube"))
     facebook = models.URLField(null=True, verbose_name=_("Facebook"))
     telegram = models.URLField(null=True, verbose_name=_("Telegram"))
+    whatsapp = models.URLField(null=True, verbose_name=_("WhatsApp"))
 
     class Meta:
         verbose_name = _("Контакт")

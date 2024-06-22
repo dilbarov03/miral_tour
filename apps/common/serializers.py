@@ -34,7 +34,7 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = (
             "id", "latitude", "longitude", "address", "primary_phone", "marketing_phone", "email", "instagram",
-            "youtube", "facebook", "telegram"
+            "youtube", "facebook", "telegram", "whatsapp"
         )
 
 

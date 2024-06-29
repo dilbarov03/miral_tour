@@ -15,7 +15,7 @@ from apps.tour.models import Tour
 from apps.tour.serializers import TourListSerializer
 from apps.users.models import User, Order
 from apps.users.serializers import EmailSerializer, VerifyCodeSerializer, UserSerializer, SavedTourSerializer, \
-    OrderCreateSerializer, UserOrderSerializer
+    OrderCreateSerializer, UserOrderSerializer, OrderUpdateSerializer
 from apps.users.verification import send_code, verify_code_cache
 
 
@@ -75,6 +75,15 @@ class OrderCreateView(generics.CreateAPIView):
     serializer_class = OrderCreateSerializer
     permission_classes = (IsAuthenticated,)
     parser_classes = (MultiPartParser, JSONParser)
+
+
+class OrderUpdateView(generics.UpdateAPIView):
+    serializer_class = OrderUpdateSerializer
+    permission_classes = (IsAuthenticated,)
+    parser_classes = (MultiPartParser, JSONParser)
+
+    def get_queryset(self):
+        return self.request.user.orders.all()
 
 
 class UserDeleteAPIView(generics.GenericAPIView):

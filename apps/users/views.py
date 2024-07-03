@@ -109,18 +109,18 @@ class UserOrdersAPIView(generics.ListAPIView):
 class CreateStripeCheckoutSession(APIView):
     permission_classes = (IsAuthenticated,)
 
-    order_id = openapi.Parameter("order_id", in_=openapi.IN_BODY, type=openapi.TYPE_INTEGER,
-                                 required=True)
 
     @swagger_auto_schema(request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            "order_id": openapi.Schema(type=openapi.TYPE_INTEGER)
+            "order_id": openapi.Schema(type=openapi.TYPE_INTEGER),
+            "currency": openapi.Schema(type=openapi.TYPE_STRING, example="usd"),
         }
     ))
     def post(self, request):
         data = request.data
         order = get_object_or_404(Order, id=data.get("order_id"))
+        currency = data.get("currency", "usd")
         if order.user != request.user:
             return Response({"success": False, "message": _("Заказ не найден")}, status=404)
 

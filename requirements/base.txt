@@ -14,4 +14,4 @@ redis==5.0.3
 python-decouple
 requests
 django-ckeditor==6.7
-stripe==9.10.0
+payze-pkg==2.4

@@ -54,7 +54,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ("id", "tour", "tarif", "order_file", "persons")
+        fields = ("id", "tour", "tarif", "order_file", "persons", "currency")
         read_only_fields = ("id", "order_file")
 
     def validate(self, attrs):
@@ -91,7 +91,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ("id", "persons")
+        fields = ("id", "persons", "currency")
 
     def validate(self, attrs):
         persons = attrs["persons"]
@@ -122,6 +122,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
             # Update the total price and save the instance
             instance.total_price = instance.tarif.final_price * len(persons)
+            instance.currency = validated_data.get("currency", instance.currency)
             instance.save()
 
         return instance
@@ -132,4 +133,4 @@ class UserOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ("id", "tour", "status", "total_price", "order_file", "created_at")
+        fields = ("id", "tour", "status", "total_price", "order_file", "created_at", "currency")

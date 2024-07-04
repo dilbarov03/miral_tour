@@ -64,6 +64,7 @@ class Order(BaseModel):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Общая стоимость"))
     status = models.CharField(max_length=20, verbose_name=_("Статус"), choices=OrderStatus.choices)
     order_file = models.FileField(verbose_name=_("Файл заказа"), upload_to="orders/", null=True, blank=True)
+    currency = models.CharField(max_length=3, verbose_name=_("Валюта"), default="USD")
 
     class Meta:
         db_table = 'order'

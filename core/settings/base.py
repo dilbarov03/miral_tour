@@ -368,3 +368,44 @@ CKEDITOR_CONFIGS = {
     }
 }
 """ CKEDITOR CONFIGURATION  END """
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',  # Set to INFO to capture only INFO level and above
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'django_debug.log'),
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',  # Set to INFO to capture only INFO level and above
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'WARNING',  # Capture WARNING and above for Django logs
+            'propagate': False,
+        },
+        'apps.users': {
+            'handlers': ['file'],
+            'level': 'INFO',  # Capture INFO and above for your custom logs
+            'propagate': False,
+        },
+    },
+}
+

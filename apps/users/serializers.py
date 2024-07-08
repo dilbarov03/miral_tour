@@ -130,7 +130,8 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
 class UserOrderSerializer(serializers.ModelSerializer):
     tour = TourListSerializer()
+    persons = OrderPersonSerializer(many=True)
 
     class Meta:
         model = Order
-        fields = ("id", "tour", "status", "total_price", "order_file", "created_at", "currency")
+        fields = ("id", "tour", "status", "total_price", "order_file", "created_at", "currency", "persons")

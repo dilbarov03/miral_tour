@@ -1,55 +1,89 @@
-from datetime import datetime
-
 from payze.client import Payze
 from payze.param import PayzeOPS, request as payze_req
+import redis
 
 import os
 import requests
 import math
+from datetime import datetime
+
 
 def convert_to_uzs(amount):
+    REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+    REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
+    redis_connection = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+
     today = datetime.now().strftime("%Y-%m-%d")
+    rate_cache = redis_connection.get("usd_rate")
+
+    if rate_cache:
+        rate_cache = rate_cache.decode("utf-8")
+        if rate_cache.split(":")[0] == today:
+            rate = float(rate_cache.split(":")[1])
+            return math.floor(amount * rate)
+
     url = f"https://cbu.uz/oz/arkhiv-kursov-valyut/json/USD/{today}/"
     response = requests.get(url)
     data = response.json()
     rate = float(data[0]["Rate"])
+    redis_connection.set("usd_rate", f"{today}:{rate}", ex=86400)
 
-    return float(math.floor(amount * rate))
+    return math.floor(amount * rate)
 
 
-def generate_pay_link(order):
-    ops = PayzeOPS(
-        url="https://payze.io",
-        auth_token=os.getenv("PAYZE_AUTH_TOKEN"),
-        hooks=payze_req.Hooks(
-            web_hook_gateway=os.getenv("PAYZE_WEBHOOK_URL"),
-            error_redirect_gateway=os.getenv("PAYZE_ERROR_URL"),
-            success_redirect_gateway=os.getenv("PAYZE_SUCCESS_URL"),
-        )
-    )
-
-    payze = Payze(ops=ops)
-
+def generate_paylink(order):
+    amount_uzs = convert_to_uzs(float(order.total_price))
     if order.currency == "UZS":
-        payment_amount = convert_to_uzs(order.total_price)
+        payment_amount = amount_uzs
     else:
         payment_amount = float(order.total_price)
 
-    metadata = payze_req.Metadata(
-        order=payze_req.Order(order.id),
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": os.getenv("PAYZE_AUTH_TOKEN")
+    }
+
+    request_data = {
+        "source": "Card",
+        "amount": payment_amount,
+        "currency": order.currency,
+        "language": "EN",
+        "hooks": {
+            "webhookGateway": os.getenv("PAYZE_WEBHOOK_URL"),
+            "successRedirectGateway": os.getenv("PAYZE_ERROR_URL"),
+            "errorRedirectGateway": os.getenv("PAYZE_SUCCESS_URL")
+        },
+        "metadata": {
+            "Order": {
+                "OrderId": str(order.id),
+                "OrderItems": None,
+                "BillingAddress": None
+            },
+            "extraAttributes": [
+                {
+                    "key": "RECEIPT_TYPE",
+                    "value": "Sale",
+                    "description": "OFD Receipt type"
+                }
+            ]
+        }
+    }
+
+    response = requests.put(
+        "https://payze.io/v2/api/payment",
+        headers=headers,
+        json=request_data
     )
 
-    req_params = payze_req.JustPay(
-        amount=payment_amount,
-        metadata=metadata,
-        currency=order.currency,
-    )
+    if response.status_code != 200:
+        return {
+            "error": response.json()
+        }
 
-    resp = payze.just_pay(
-        req_params=req_params,
-        reason="for_trip",
-    )
+    response_data = response.json()
+
+    payment_url = response_data['data']['payment']['paymentUrl']
 
     return {
-        "pay_link": resp.data.payment.payment_url
+        "pay_link": payment_url
     }

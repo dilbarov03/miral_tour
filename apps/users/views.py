@@ -20,7 +20,7 @@ from apps.users.models import User, Order
 from apps.users.payment_serializers import PayzeWebhookSerializer
 from apps.users.serializers import EmailSerializer, VerifyCodeSerializer, UserSerializer, SavedTourSerializer, \
     OrderCreateSerializer, UserOrderSerializer, OrderUpdateSerializer
-from apps.users.utils import generate_pay_link
+from apps.users.utils import generate_paylink
 from apps.users.verification import send_code, verify_code_cache
 
 logger = logging.getLogger(__name__)
@@ -132,7 +132,7 @@ class CreatePayzeCheckoutSession(APIView):
         elif order.status == Order.OrderStatus.MODERATION:
             return Response({"success": False, "message": _("Заказ на модерации")}, status=400)
 
-        response = generate_pay_link(order)
+        response = generate_paylink(order)
         return Response(response)
 
 

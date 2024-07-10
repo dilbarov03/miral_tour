@@ -60,7 +60,7 @@ class PayerSerializer(serializers.Serializer):
 
 class PayzeWebhookSerializer(serializers.Serializer):
     Source = serializers.CharField()
-    IdempotencyKey = serializers.CharField()
+    IdempotencyKey = serializers.CharField(allow_null=True, required=False)
     PaymentId = serializers.CharField()
     Type = serializers.CharField()
     Sandbox = serializers.BooleanField()

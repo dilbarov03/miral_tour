@@ -11,6 +11,6 @@ urlpatterns = [
     path("orders/create/", views.OrderCreateView.as_view()),
     path("orders/my/", views.UserOrdersAPIView.as_view()),
     path("orders/<int:pk>/update/", views.OrderUpdateView.as_view()),
-    path("checkout/", views.CreatePayzeCheckoutSession.as_view()),
-    path("payze-webhook/", views.PayzeWebhookAPIView.as_view()),
+    path("payment/checkout/", views.CreatePayzeCheckoutSession.as_view()),
+    path("payment/payze-webhook/", views.PayzeWebhookAPIView.as_view()),
 ]

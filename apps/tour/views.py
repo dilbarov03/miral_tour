@@ -50,6 +50,7 @@ class TourListView(generics.ListAPIView):
     search_fields = ("title",)
     filterset_fields = ("category", "tour_type", "from_region", "to_region", "return_region",
                         "is_popular", "discount")
+    permission_classes = (IsAuthenticated,)
 
 
 class SimilarTourListView(generics.ListAPIView):

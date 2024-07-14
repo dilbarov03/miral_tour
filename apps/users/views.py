@@ -140,30 +140,38 @@ class PayzeWebhookAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = PayzeWebhookSerializer(data=request.data)
 
-        print(request.data)
         if serializer.is_valid():
             validated_data = serializer.validated_data
             payment_data = get_payment_data(request.data)
             payment_status = validated_data["PaymentStatus"]
 
             order_id = validated_data["Metadata"]["Order"]["OrderId"]
+            order = Order.objects.filter(id=order_id).first()
+
+            if not order:
+                logger.warning(f"Order {order_id} not found.")
+                return
 
             logger.info(f"Order {order_id} is in {payment_status} status.")
-
+            print(f"Inside serializer - {payment_status}")
             try:
                 with transaction.atomic():
 
                     if payment_status == "Captured":
-                        order = Order.objects.filter(id=order_id).first()
-                        if order:
-                            order.status = Order.OrderStatus.SUCCESS
-                            order.save()
-                            Payment.objects.create(
-                                user=order.user, order=order,
-                                **payment_data
-                            )
-                        else:
-                            logger.warning(f"Order {order_id} not found.")
+                        order.status = Order.OrderStatus.SUCCESS
+                        order.save()
+                        Payment.objects.create(
+                            user=order.user, order=order,
+                            **payment_data
+                        )
+
+                    elif payment_status == "Refunded":
+                        order.status = Order.OrderStatus.MODERATION
+                        order.save()
+                        # update payment
+                        Payment.objects.filter(payment_id=validated_data["PaymentId"]).update(
+                            **payment_data
+                        )
 
             except Exception as e:
                 logger.error(f"Error processing webhook: {e}")
@@ -171,4 +179,5 @@ class PayzeWebhookAPIView(APIView):
 
             return Response({"message": "Webhook received successfully"}, status=status.HTTP_200_OK)
         else:
+            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

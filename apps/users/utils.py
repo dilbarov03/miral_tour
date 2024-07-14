@@ -5,6 +5,8 @@ import requests
 import math
 from datetime import datetime, timezone, timedelta
 
+from apps.users.models import Order
+
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
 
@@ -49,8 +51,8 @@ def generate_paylink(order):
         "language": "EN",
         "hooks": {
             "webhookGateway": os.getenv("PAYZE_WEBHOOK_URL"),
-            "successRedirectGateway": os.getenv("PAYZE_ERROR_URL"),
-            "errorRedirectGateway": os.getenv("PAYZE_SUCCESS_URL")
+            "successRedirectGateway": os.getenv("PAYZE_SUCCESS_URL"),
+            "errorRedirectGateway": os.getenv("PAYZE_ERROR_URL")
         },
         "metadata": {
             "Order": {
@@ -161,3 +163,45 @@ def get_payment_data(webhook_data: dict) -> dict:
         payment_data["phone_number"] = metadata["Order"]["BillingAddress"].get("PhoneNumber")
 
     return payment_data
+
+
+def refund_payment(order_id):
+    order = Order.objects.get(id=order_id)
+    payment = order.payments.filter(payment_status="Captured").first()
+    if not payment:
+        return {
+            "error": "Payment not found"
+        }
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': os.getenv('PAYZE_AUTH_TOKEN')  # API_KEY:API_SECRET
+    }
+
+    req_body = {
+        "transactionId": payment.payment_id,
+        "amount": payment.final_amount,
+        "orderData": {
+            "orderId": str(order.id),
+            "advanceContractId": "",
+            "orderItems": None,
+            "billingAddress": None,
+        },
+        "extraAttributes": [
+            {
+                "key": "RECEIPT_TYPE",
+                "value": "Refund",
+                "description": "OFD Receipt type"
+            }
+        ]
+    }
+
+    response = requests.put(
+        "https://payze.io/v2/api/payment/refund",
+        headers=headers,
+        json=req_body
+    )
+
+    response_data = response.json()
+
+    return response_data

@@ -8,7 +8,7 @@ class RefundSerializer(serializers.Serializer):
     Amount = serializers.FloatField(allow_null=True, required=False)
     RequestedAmount = serializers.FloatField(allow_null=True, required=False)
     RejectReason = serializers.CharField(allow_null=True, required=False)
-    RefundDate = serializers.DateTimeField(allow_null=True, required=False)
+    RefundDate = serializers.IntegerField(allow_null=True, required=False)
     RefundDateIso = serializers.DateTimeField(allow_null=True, required=False)
     Revisions = serializers.ListField(child=serializers.DictField(), required=False)
 

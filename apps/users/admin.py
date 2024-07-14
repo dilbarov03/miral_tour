@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.forms import UserChangeForm
 
-from apps.users.models import User, SavedTour, OrderPerson, Order
+from apps.users.models import User, SavedTour, OrderPerson, Order, Payment
 
 
 @admin.register(User)
@@ -36,7 +36,7 @@ class OrderPersonInlineAdmin(admin.StackedInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'tour', 'tarif', 'total_price', 'status')
+    list_display = ('id', 'user', 'tour', 'tarif', 'total_price', 'status', 'currency')
     list_display_links = ('id', 'user')
     search_fields = ('user__full_name', 'tour__title')
     list_per_page = 25
@@ -44,3 +44,11 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = (OrderPersonInlineAdmin,)
     autocomplete_fields = ('user', 'tour', 'tarif')
 
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'payment_id', 'user', 'amount', 'currency', 'payment_status')
+    list_display_links = ('id', 'payment_id')
+    list_per_page = 25
+    list_filter = ('payment_status', 'currency')
+    autocomplete_fields = ('order', 'user')

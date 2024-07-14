@@ -1,4 +1,3 @@
-import stripe
 from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -16,11 +15,11 @@ import logging
 
 from apps.tour.models import Tour
 from apps.tour.serializers import TourListSerializer
-from apps.users.models import User, Order
+from apps.users.models import User, Order, Payment
 from apps.users.payment_serializers import PayzeWebhookSerializer
 from apps.users.serializers import EmailSerializer, VerifyCodeSerializer, UserSerializer, SavedTourSerializer, \
     OrderCreateSerializer, UserOrderSerializer, OrderUpdateSerializer
-from apps.users.utils import generate_paylink
+from apps.users.utils import generate_paylink, get_payment_data
 from apps.users.verification import send_code, verify_code_cache
 
 logger = logging.getLogger(__name__)
@@ -140,9 +139,13 @@ class PayzeWebhookAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = PayzeWebhookSerializer(data=request.data)
+
+        print(request.data)
         if serializer.is_valid():
             validated_data = serializer.validated_data
+            payment_data = get_payment_data(request.data)
             payment_status = validated_data["PaymentStatus"]
+
             order_id = validated_data["Metadata"]["Order"]["OrderId"]
 
             logger.info(f"Order {order_id} is in {payment_status} status.")
@@ -155,9 +158,12 @@ class PayzeWebhookAPIView(APIView):
                         if order:
                             order.status = Order.OrderStatus.SUCCESS
                             order.save()
+                            Payment.objects.create(
+                                user=order.user, order=order,
+                                **payment_data
+                            )
                         else:
                             logger.warning(f"Order {order_id} not found.")
-
 
             except Exception as e:
                 logger.error(f"Error processing webhook: {e}")

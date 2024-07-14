@@ -1,7 +1,7 @@
 from django.urls import path
 
 from apps.common.views import SlideListAPIView, StatisticsListAPIView, NewsListAPIView, NewsDetailAPIView, \
-    ContactAPIView, MessageRequestAPIView, FileUploadAPIView, AboutUsAPIView
+    ContactAPIView, MessageRequestAPIView, FileUploadAPIView, AboutUsAPIView, DynamicPageAPIView
 
 urlpatterns = [
     path("slides/", SlideListAPIView.as_view(), name="slide-list"),
@@ -12,4 +12,5 @@ urlpatterns = [
     path("message-request/", MessageRequestAPIView.as_view(), name="message-request"),
     path("file-upload/", FileUploadAPIView.as_view(), name="file-upload"),
     path("about-us/", AboutUsAPIView.as_view(), name="about-us"),
+    path("dynamic-page/<slug:slug>/", DynamicPageAPIView.as_view(), name="dynamic-page"),
 ]

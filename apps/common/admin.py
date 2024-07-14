@@ -1,7 +1,7 @@
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin, TabbedTranslationAdmin
 
-from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, NewsTag, AboutUs
+from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, NewsTag, AboutUs, DynamicPage
 
 
 @admin.register(Slide)
@@ -61,3 +61,9 @@ class AboutUsAdmin(TabbedTranslationAdmin):
         if AboutUs.objects.count() >= 1:
             return False
         return True
+
+
+@admin.register(DynamicPage)
+class DynamicPageAdmin(TabbedTranslationAdmin):
+    list_display = ('id', 'title', )
+    prepopulated_fields = {'slug': ('title',)}

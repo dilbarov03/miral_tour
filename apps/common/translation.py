@@ -1,6 +1,6 @@
 from modeltranslation.translator import translator, TranslationOptions
 
-from apps.common.models import Slide, Statistics, News, Contact, NewsTag, AboutUs
+from apps.common.models import Slide, Statistics, News, Contact, NewsTag, AboutUs, DynamicPage
 
 
 class SlideTranslationOptions(TranslationOptions):
@@ -27,9 +27,14 @@ class AboutTranslationOptions(TranslationOptions):
     fields = ('title', 'body')
 
 
+class DynamicPageTranslationOptions(TranslationOptions):
+    fields = ('title', 'body')
+
+
 translator.register(Slide, SlideTranslationOptions)
 translator.register(Statistics, StatisticsTranslationOptions)
 translator.register(News, NewsTranslationOptions)
 translator.register(Contact, ContactTranslationOptions)
 translator.register(NewsTag, NewsTagTranslationOptions)
 translator.register(AboutUs, AboutTranslationOptions)
+translator.register(DynamicPage, DynamicPageTranslationOptions)

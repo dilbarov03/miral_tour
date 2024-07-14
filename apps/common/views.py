@@ -1,10 +1,11 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
+from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 
-from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, AboutUs
+from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, AboutUs, DynamicPage
 from apps.common.serializers import SlideSerializer, StatisticsSerializer, NewsSerializer, ContactSerializer, \
-    MessageRequestSerializer, FileSerializer, AboutSerializer
+    MessageRequestSerializer, FileSerializer, AboutSerializer, DynamicPageSerializer
 
 
 class SlideListAPIView(generics.ListAPIView):
@@ -53,3 +54,10 @@ class AboutUsAPIView(generics.RetrieveAPIView):
 
     def get_object(self):
         return AboutUs.objects.first()
+
+
+class DynamicPageAPIView(generics.RetrieveAPIView):
+    serializer_class = DynamicPageSerializer
+
+    def get_object(self):
+        return get_object_or_404(DynamicPage, slug=self.kwargs.get('slug'))

@@ -126,3 +126,16 @@ class AboutUs(BaseModel):
 
     def __str__(self):
         return self.title
+
+
+class DynamicPage(BaseModel):
+    title = models.CharField(max_length=255, verbose_name=_("Заголовок"))
+    body = RichTextUploadingField(verbose_name=_("Текст"))
+    slug = models.SlugField(verbose_name=_("Slug"))
+
+    class Meta:
+        verbose_name = _("Динамическая страница")
+        verbose_name_plural = _("Динамические страницы")
+
+    def __str__(self):
+        return self.title

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, NewsTag, AboutUs
+from apps.common.models import Slide, Statistics, News, Contact, MessageRequest, File, NewsTag, AboutUs, DynamicPage
 
 
 class SlideSerializer(serializers.ModelSerializer):
@@ -53,4 +53,10 @@ class FileSerializer(serializers.ModelSerializer):
 class AboutSerializer(serializers.ModelSerializer):
     class Meta:
         model = AboutUs
+        fields = ("id", "title", "body")
+
+
+class DynamicPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DynamicPage
         fields = ("id", "title", "body")

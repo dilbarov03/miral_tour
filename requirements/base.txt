@@ -15,3 +15,4 @@ python-decouple
 requests
 django-ckeditor==6.7
 payze-pkg==2.4
+python-dateutil

@@ -74,7 +74,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
         with transaction.atomic():
             usd_price = tarif.final_price * len(persons)
-            uzs_price = convert_to_uzs(usd_price)
+            uzs_price = convert_to_uzs(float(usd_price))
             order = Order.objects.create(
                 user=self.context["request"].user,
                 total_price=usd_price if validated_data["currency"] == "USD" else uzs_price,

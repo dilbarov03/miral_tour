@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from apps.tour.serializers import TourListSerializer
 from apps.users.models import User, SavedTour, OrderPerson, Order
+from apps.users.utils import convert_to_uzs
 
 
 class EmailSerializer(serializers.Serializer):
@@ -72,9 +73,11 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         tour = validated_data["tour"]
 
         with transaction.atomic():
+            usd_price = tarif.final_price * len(persons)
+            uzs_price = convert_to_uzs(usd_price)
             order = Order.objects.create(
                 user=self.context["request"].user,
-                total_price=tarif.final_price * len(persons),
+                total_price=usd_price if validated_data["currency"] == "USD" else uzs_price,
                 status=Order.OrderStatus.MODERATION,
                 **validated_data
             )

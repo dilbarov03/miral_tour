@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, get_language
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status
@@ -131,7 +131,8 @@ class CreatePayzeCheckoutSession(APIView):
         elif order.status == Order.OrderStatus.MODERATION:
             return Response({"success": False, "message": _("Заказ на модерации")}, status=400)
 
-        response = generate_paylink(order)
+        language = get_language()
+        response = generate_paylink(order, language)
         return Response(response)
 
 

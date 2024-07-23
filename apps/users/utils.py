@@ -32,7 +32,7 @@ def convert_to_uzs(amount):
     return math.floor(amount * rate)
 
 
-def generate_paylink(order):
+def generate_paylink(order, language="RU"):
     amount_uzs = convert_to_uzs(float(order.total_price))
     if order.currency == "UZS":
         payment_amount = amount_uzs
@@ -48,11 +48,11 @@ def generate_paylink(order):
         "source": "Card",
         "amount": payment_amount,
         "currency": order.currency,
-        "language": "EN",
+        "language": language,
         "hooks": {
             "webhookGateway": os.getenv("PAYZE_WEBHOOK_URL"),
-            "successRedirectGateway": os.getenv("PAYZE_SUCCESS_URL"),
-            "errorRedirectGateway": os.getenv("PAYZE_ERROR_URL")
+            "successRedirectGateway": os.getenv("PAYZE_SUCCESS_URL").replace("lang", language),
+            "errorRedirectGateway": os.getenv("PAYZE_ERROR_URL").replace("lang", language)
         },
         "metadata": {
             "Order": {

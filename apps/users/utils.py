@@ -165,9 +165,7 @@ def get_payment_data(webhook_data: dict) -> dict:
     return payment_data
 
 
-def refund_payment(order_id):
-    order = Order.objects.get(id=order_id)
-    payment = order.payments.filter(payment_status="Captured").first()
+def refund_payment(payment):
     if not payment:
         return {
             "error": "Payment not found"
@@ -182,7 +180,7 @@ def refund_payment(order_id):
         "transactionId": payment.payment_id,
         "amount": payment.final_amount,
         "orderData": {
-            "orderId": str(order.id),
+            "orderId": str(payment.order.id),
             "advanceContractId": "",
             "orderItems": None,
             "billingAddress": None,

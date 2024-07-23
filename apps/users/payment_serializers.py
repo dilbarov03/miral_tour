@@ -1,4 +1,7 @@
 from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
+
+from apps.users.models import Payment
 
 
 class RefundSerializer(serializers.Serializer):
@@ -92,3 +95,22 @@ class PayzeWebhookSerializer(serializers.Serializer):
     Splits = serializers.ListField(child=serializers.DictField(), allow_null=True, required=False)
     Metadata = MetadataSerializer()
     Payer = PayerSerializer()
+
+
+class RefundPaymentSerializer(serializers.Serializer):
+    payment = serializers.SlugRelatedField(
+        queryset=Payment.objects.all(),
+        slug_field='payment_id',
+        write_only=True
+    )
+    amount = serializers.FloatField()
+
+    def validate(self, attrs):
+        payment = attrs["payment"]
+        if attrs["amount"] <= 0:
+            raise serializers.ValidationError({"amount": _("Amount must be greater than 0")})
+        if payment.final_amount < attrs["amount"]:
+            raise serializers.ValidationError({"amount": _("Amount must be less than payment amount")})
+        if payment.payment_status != Payment.Status.CAPTURED:
+            raise serializers.ValidationError({"payment": _("Payment must be in Captured status")})
+        return attrs

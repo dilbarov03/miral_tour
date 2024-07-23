@@ -13,4 +13,5 @@ urlpatterns = [
     path("orders/<int:pk>/update/", views.OrderUpdateView.as_view()),
     path("payment/checkout/", views.CreatePayzeCheckoutSession.as_view()),
     path("payment/payze-webhook/", views.PayzeWebhookAPIView.as_view()),
+    path("payment/refund/", views.RefundAPIView.as_view()),
 ]

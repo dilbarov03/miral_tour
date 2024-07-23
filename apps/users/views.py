@@ -16,10 +16,11 @@ import logging
 from apps.tour.models import Tour
 from apps.tour.serializers import TourListSerializer
 from apps.users.models import User, Order, Payment
-from apps.users.payment_serializers import PayzeWebhookSerializer
+from apps.users.payment_serializers import PayzeWebhookSerializer, RefundPaymentSerializer
+from apps.users.permissions import IsAdmin
 from apps.users.serializers import EmailSerializer, VerifyCodeSerializer, UserSerializer, SavedTourSerializer, \
     OrderCreateSerializer, UserOrderSerializer, OrderUpdateSerializer
-from apps.users.utils import generate_paylink, get_payment_data
+from apps.users.utils import generate_paylink, get_payment_data, refund_payment
 from apps.users.verification import send_code, verify_code_cache
 
 logger = logging.getLogger(__name__)
@@ -154,7 +155,7 @@ class PayzeWebhookAPIView(APIView):
                 return
 
             logger.info(f"Order {order_id} is in {payment_status} status.")
-            print(f"Inside serializer - {payment_status}")
+            print(f"Order {order_id} is in {payment_status} status.")
             try:
                 with transaction.atomic():
 
@@ -167,7 +168,7 @@ class PayzeWebhookAPIView(APIView):
                         )
 
                     elif payment_status == "Refunded":
-                        order.status = Order.OrderStatus.MODERATION
+                        order.status = Order.OrderStatus.CANCELED
                         order.save()
                         # update payment
                         Payment.objects.filter(payment_id=validated_data["PaymentId"]).update(
@@ -180,5 +181,17 @@ class PayzeWebhookAPIView(APIView):
 
             return Response({"message": "Webhook received successfully"}, status=status.HTTP_200_OK)
         else:
-            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RefundAPIView(generics.GenericAPIView):
+    serializer_class = RefundPaymentSerializer
+    permission_classes = (IsAuthenticated, IsAdmin)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        payment = serializer.validated_data.get("payment")
+        response = refund_payment(payment)
+
+        return Response(response)

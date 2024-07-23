@@ -52,6 +52,7 @@ class SavedTour(BaseModel):
 
 class Order(BaseModel):
     class OrderStatus(models.TextChoices):
+        CANCELED = "canceled", _("Отменен")
         MODERATION = "moderation", _("На модерации")
         PRE_PAYMENT = "pre_payment", _("В ожидании оплаты")
         SUCCESS = "success", _("Оплачен")
@@ -96,20 +97,19 @@ class OrderPerson(BaseModel):
 
 
 class Payment(models.Model):
-    PAYMENT_STATUS_CHOICES = [
-        ('Draft', 'Draft'),
-        ('Blocked', 'Blocked'),
-        ('Captured', 'Captured'),
-        ('Refunded', 'Refunded'),
-        ('PartiallyRefunded', 'PartiallyRefunded'),
-        ('Rejected', 'Rejected'),
-    ]
+    class Status(models.TextChoices):
+        DRAFT = "Draft", _("Draft")
+        BLOCKED = "Blocked", _("Blocked")
+        CAPTURED = "Captured", _("Captured")
+        REFUNDED = "Refunded", _("Refunded")
+        PARTIALLY_REFUNDED = "PartiallyRefunded", _("Partially Refunded")
+        REJECTED = "Rejected", _("Rejected")
 
     source = models.CharField(max_length=50)
-    payment_id = models.CharField(max_length=255, unique=True)
+    payment_id = models.CharField(max_length=255, unique=True, db_index=True)
     type = models.CharField(max_length=50)
     sandbox = models.BooleanField(default=False)
-    payment_status = models.CharField(max_length=50, choices=PAYMENT_STATUS_CHOICES)
+    payment_status = models.CharField(max_length=50, choices=Status.choices)
     amount = models.FloatField()
     final_amount = models.FloatField(null=True, blank=True)
     currency = models.CharField(max_length=10)

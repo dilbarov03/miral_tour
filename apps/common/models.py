@@ -91,6 +91,8 @@ class Contact(BaseModel):
     primary_phone = models.CharField(max_length=15, verbose_name=_("Основной телефон"))
     marketing_phone = models.CharField(max_length=15, null=True, verbose_name=_("Маркетинг телефон"))
     email = models.EmailField(verbose_name=_("Email"))
+    director = models.CharField(max_length=255, verbose_name=_("Директор"), null=True)
+    work_time = models.CharField(max_length=255, verbose_name=_("Время работы"), null=True)
     instagram = models.URLField(null=True, verbose_name=_("Instagram"))
     youtube = models.URLField(null=True, verbose_name=_("YouTube"))
     facebook = models.URLField(null=True, verbose_name=_("Facebook"))

@@ -20,7 +20,7 @@ class NewsTranslationOptions(TranslationOptions):
 
 
 class ContactTranslationOptions(TranslationOptions):
-    fields = ('address', 'director')
+    fields = ('address', 'director', 'work_time')
 
 
 class AboutTranslationOptions(TranslationOptions):

@@ -11,7 +11,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'email')
     search_fields = ('email', 'full_name', 'phone')
     list_filter = ('is_active', 'is_staff', 'is_superuser')
-    list_per_page = 25
+    list_per_page = 100
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),

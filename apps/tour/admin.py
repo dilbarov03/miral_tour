@@ -61,6 +61,8 @@ class TourAdmin(TabbedTranslationAdmin):
     list_filter = ("category", "tour_type", "region_one", "region_two", "region_three",
                    "period", "is_active", "discount", "is_popular", "transfer")
     inlines = (TourImagesInline, TourDaysInline, TourFeatureInline, TourTarifInline)
+    autocomplete_fields = ("region_one", "region_two", "region_three", "region_four", "region_five",
+                           "category")
 
 
 class TarifFeatureInline(TranslationTabularInline):

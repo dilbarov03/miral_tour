@@ -54,6 +54,14 @@ class TourCategory(BaseModel):
         return f"{self.name} - {self.tour_type}"
 
 
+class TravelPeriods(models.TextChoices):
+    ALL = "all", _("Весь год")
+    WINTER = "winter", _("Зима")
+    SPRING = "spring", _("Весна")
+    SUMMER = "summer", _("Лето")
+    AUTUMN = "autumn", _("Осень")
+
+
 class Tour(BaseModel):
     title = models.CharField(max_length=255, verbose_name=_("Название"))
     description = models.TextField(verbose_name=_("Описание"), blank=True, null=True)
@@ -64,32 +72,49 @@ class Tour(BaseModel):
         related_name="tours",
         verbose_name=_("Категория"),
     )
-    tour_type = models.ForeignKey(
+    tour_type = models.ManyToManyField(
         TourType,
-        on_delete=models.CASCADE,
         related_name="tours",
         verbose_name=_("Тип тура"),
     )
-    from_region = models.ForeignKey(
+    region_one = models.ForeignKey(
         Region,
         on_delete=models.CASCADE,
-        related_name="tours",
-        verbose_name=_("Откуда")
+        related_name="tours_region_one",
+        verbose_name=_("Город 1"),
+        null=True
     )
-    to_region = models.ForeignKey(
+    region_two = models.ForeignKey(
         Region,
         on_delete=models.CASCADE,
-        related_name="tours_to",
-        verbose_name=_("Куда"),
+        related_name="tours_region_two",
+        verbose_name=_("Город 2"),
+        null=True
     )
-    return_region = models.ForeignKey(
+    region_three = models.ForeignKey(
         Region,
         on_delete=models.CASCADE,
-        related_name="tours_return",
-        verbose_name=_("Обратно"),
+        related_name="tours_region_three",
+        verbose_name=_("Город 3"),
+        null=True
     )
-    from_date = models.DateField(verbose_name=_("Дата начала"))
-    to_date = models.DateField(verbose_name=_("Дата окончания"))
+    region_four = models.ForeignKey(
+        Region,
+        on_delete=models.CASCADE,
+        related_name="tours_region_four",
+        verbose_name=_("Город 4"),
+        null=True,
+        blank=True
+    )
+    region_five = models.ForeignKey(
+        Region,
+        on_delete=models.CASCADE,
+        related_name="tours_region_five",
+        verbose_name=_("Город 5"),
+        null=True,
+        blank=True
+    )
+    period = models.CharField(max_length=255, choices=TravelPeriods.choices, verbose_name=_("Период"))
     video_link = models.URLField(verbose_name=_("Ссылка на видео"), blank=True, null=True)
     video = models.FileField(upload_to="tour_videos", verbose_name=_("Видео"), blank=True, null=True)
     is_active = models.BooleanField(default=True, verbose_name=_("Активный"))

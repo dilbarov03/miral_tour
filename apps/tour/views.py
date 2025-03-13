@@ -48,7 +48,7 @@ class TourListView(generics.ListAPIView):
     queryset = Tour.objects.active()
     filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ("title",)
-    filterset_fields = ("category", "tour_type", "from_region", "to_region", "return_region",
+    filterset_fields = ("category", "tour_type", "region_one", "region_two", "region_three", "period",
                         "is_popular", "discount")
 
 
@@ -59,7 +59,7 @@ class SimilarTourListView(generics.ListAPIView):
         tour = get_object_or_404(Tour, pk=self.kwargs["pk"])
         return Tour.objects.filter(
             category=tour.category,
-            tour_type=tour.tour_type,
+            tour_type__in=tour.tour_type.all(),
         ).exclude(pk=tour.pk).order_by("?")[:4]
 
 

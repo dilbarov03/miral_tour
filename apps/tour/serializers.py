@@ -68,7 +68,7 @@ class TourListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ("id", "title", "description", "main_image", "from_date", "to_date", "transfer", "discount",
+        fields = ("id", "title", "description", "main_image", "period", "transfer", "discount",
                   "discount_text", "min_price", "origin_start_price", "is_saved")
 
     def get_is_saved(self, obj):
@@ -88,9 +88,11 @@ class RegionTourSerializer(serializers.ModelSerializer):
 
 
 class TourDetailSerializer(serializers.ModelSerializer):
-    from_region = RegionSerializer()
-    to_region = RegionSerializer()
-    return_region = RegionSerializer()
+    region_one = RegionSerializer()
+    region_two = RegionSerializer()
+    region_three = RegionSerializer()
+    region_four = RegionSerializer()
+    region_five = RegionSerializer()
     images = TourImageSerializer(many=True)
     days = TourDaysSerializer(many=True)
     features = TourFeatureSerializer(many=True)
@@ -100,8 +102,9 @@ class TourDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ("id", "title", "description", "main_image", "from_region", "to_region", "return_region",
-                  "from_date", "to_date", "video_link", "video", "people_count", "discount", "discount_text",
+        fields = ("id", "title", "description", "main_image",
+                  "region_one", "region_two", "region_three", "region_four", "region_five",
+                  "period", "video_link", "video", "people_count", "discount", "discount_text",
                   "images", "days", "features", "tarifs", "min_price", "transfer", "is_saved")
 
     def get_is_saved(self, obj):

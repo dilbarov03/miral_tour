@@ -55,11 +55,11 @@ class TourTarifInline(TranslationStackedInline):
 
 @admin.register(Tour)
 class TourAdmin(TabbedTranslationAdmin):
-    list_display = ("id", "title", "category", "tour_type")
+    list_display = ("id", "title", "category", )
     list_display_links = ("id", "title")
     search_fields = ("title",)
-    list_filter = ("category", "tour_type", "from_region", "to_region", "return_region",
-                   "from_date", "to_date", "is_active", "discount", "is_popular", "transfer")
+    list_filter = ("category", "tour_type", "region_one", "region_two", "region_three",
+                   "period", "is_active", "discount", "is_popular", "transfer")
     inlines = (TourImagesInline, TourDaysInline, TourFeatureInline, TourTarifInline)
 
 

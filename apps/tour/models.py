@@ -115,11 +115,11 @@ class Tour(BaseModel):
         blank=True
     )
     period = models.CharField(max_length=255, choices=TravelPeriods.choices, verbose_name=_("Период"))
+    days_count = models.IntegerField(verbose_name=_("Количество дней"), null=True)
     video_link = models.URLField(verbose_name=_("Ссылка на видео"), blank=True, null=True)
     video = models.FileField(upload_to="tour_videos", verbose_name=_("Видео"), blank=True, null=True)
     is_active = models.BooleanField(default=True, verbose_name=_("Активный"))
     is_popular = models.BooleanField(default=False, verbose_name=_("Популярный"))
-    transfer = models.BooleanField(default=False, verbose_name=_("Трансфер включен"))
     people_count = models.IntegerField(verbose_name=_("Количество людей"))
     discount = models.BooleanField(default=False, verbose_name=_("Скидка"))
     discount_text = models.TextField(verbose_name=_("Текст скидки"), blank=True, null=True)

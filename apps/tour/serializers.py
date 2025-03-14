@@ -68,7 +68,7 @@ class TourListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ("id", "title", "description", "main_image", "period", "transfer", "discount",
+        fields = ("id", "title", "description", "main_image", "period", "days_count", "discount",
                   "discount_text", "min_price", "origin_start_price", "is_saved")
 
     def get_is_saved(self, obj):
@@ -104,8 +104,8 @@ class TourDetailSerializer(serializers.ModelSerializer):
         model = Tour
         fields = ("id", "title", "description", "main_image",
                   "region_one", "region_two", "region_three", "region_four", "region_five",
-                  "period", "video_link", "video", "people_count", "discount", "discount_text",
-                  "images", "days", "features", "tarifs", "min_price", "transfer", "is_saved")
+                  "period", "days_count", "video_link", "video", "people_count", "discount", "discount_text",
+                  "images", "days", "features", "tarifs", "min_price", "is_saved")
 
     def get_is_saved(self, obj):
         if self.context.get("request").user.is_authenticated:

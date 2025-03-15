@@ -64,6 +64,7 @@ class TravelPeriods(models.TextChoices):
 
 class Tour(BaseModel):
     title = models.CharField(max_length=255, verbose_name=_("Название"))
+    slug = models.SlugField(max_length=255, unique=True, verbose_name=_("Slug"), null=True)
     description = models.TextField(verbose_name=_("Описание"), blank=True, null=True)
     main_image = ResizedImageField(upload_to="tours", verbose_name=_("Главное изображение"))
     category = models.ForeignKey(

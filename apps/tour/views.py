@@ -32,7 +32,7 @@ class TourDetailView(generics.RetrieveAPIView):
 
     def get_object(self):
         try:
-            tour = Tour.objects.prefetch_related("images", "days", "tarifs").get(pk=self.kwargs["pk"])
+            tour = Tour.objects.prefetch_related("images", "days", "tarifs").get(slug=self.kwargs["slug"])
         except ObjectDoesNotExist:
             raise Http404
         return tour
@@ -56,7 +56,7 @@ class SimilarTourListView(generics.ListAPIView):
     serializer_class = serializers.TourListSerializer
 
     def get_queryset(self):
-        tour = get_object_or_404(Tour, pk=self.kwargs["pk"])
+        tour = get_object_or_404(Tour, slug=self.kwargs["slug"])
         return Tour.objects.filter(
             category=tour.category,
             tour_type__in=tour.tour_type.all(),

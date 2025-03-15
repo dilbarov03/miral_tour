@@ -8,6 +8,6 @@ urlpatterns = [
     path("region-tours/", views.RegionTourListView.as_view()),
     path("tour/", views.TourListView.as_view()),
     path("tour/filter/", views.TourFilterView.as_view()),
-    path("tour/<int:pk>/", views.TourDetailView.as_view()),
-    path("tour/<int:pk>/similar/", views.SimilarTourListView.as_view()),
+    path("tour/<slug:slug>/", views.TourDetailView.as_view()),
+    path("tour/<slug:slug>/similar/", views.SimilarTourListView.as_view()),
 ]

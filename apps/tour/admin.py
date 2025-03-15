@@ -63,6 +63,7 @@ class TourAdmin(TabbedTranslationAdmin):
     inlines = (TourImagesInline, TourDaysInline, TourFeatureInline, TourTarifInline)
     autocomplete_fields = ("region_one", "region_two", "region_three", "region_four", "region_five",
                            "category")
+    prepopulated_fields = {"slug": ("title_en",)}
 
 
 class TarifFeatureInline(TranslationTabularInline):

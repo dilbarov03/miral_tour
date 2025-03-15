@@ -5,10 +5,55 @@ import requests
 import math
 from datetime import datetime, timezone, timedelta
 
-from apps.users.models import Order
-
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
+
+
+def send_telegram(text="Text"):
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
+
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+
+    url = "https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&parse_mode=html".format(
+        token, chat_id, text)
+    requests.post(url)
+    return
+
+
+
+def send_order_message(order):
+    # we should send message to telegram
+    BASE_URL = os.getenv("BASE_URL")
+
+    # Format date: "YYYY-MM-DD HH:MM"
+    created_at = order.created_at.strftime("%Y-%m-%d %H:%M")
+
+    # Translate status to Uzbek
+    status_mapping = {
+        "canceled": "Bekor qilingan",
+        "moderation": "Moderatsiyada",
+        "pre_payment": "To'lov kutilmoqda",
+        "success": "To'langan"
+    }
+    status_uz = status_mapping.get(order.status, order.status)
+
+    # Check if phone exists, otherwise set "-"
+    phone = order.user.phone if order.user.phone else "-"
+
+    text = (
+        f"<b>Yangi buyurtma</b>\n\n"
+        f"<b>Buyurtma ID:</b> {order.id}\n"
+        f"<b>Buyurtmachi:</b> {order.user.full_name}\n"
+        f"<b>Telefon raqam:</b> {phone}\n"
+        f"<b>Tur nomi:</b> {order.tour.title}\n"
+        f"<b>Buyurtma narxi:</b> {order.total_price} {order.currency}\n"
+        f"<b>Tarif:</b> {order.tarif.title}\n"
+        f"<b>Buyurtma sanasi:</b> {created_at}\n"
+        f"<b>Buyurtma holati:</b> {status_uz}\n\n"
+        f"<a href='{BASE_URL}/admin/users/order/{order.id}/change/'>👉🏻 Buyurtmani ko'rish</a>"
+    )
+
+    send_telegram(text)
 
 
 def convert_to_uzs(amount):

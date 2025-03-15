@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from apps.tour.serializers import TourListSerializer
 from apps.users.models import User, SavedTour, OrderPerson, Order
+from apps.users.utils import send_order_message
 
 
 class EmailSerializer(serializers.Serializer):
@@ -82,6 +83,10 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                 OrderPerson.objects.create(order=order, **person)
             tour.people_count -= len(persons)
             tour.save()
+
+            # send message in telegram
+            send_order_message(order)
+
 
         return order
 
